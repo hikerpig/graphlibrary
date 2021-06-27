@@ -14,7 +14,7 @@ BUILD_DIR = build
 COVERAGE_DIR = $(BUILD_DIR)/cov
 DIST_DIR = dist
 
-SRC_FILES = index.js $(shell find lib -type f -name '*.js')
+SRC_FILES = lib/index.js $(shell find lib -type f -name '*.js')
 TEST_FILES = $(shell find test -type f -name '*.js' | grep -v 'bundle-test.js' | grep -v 'bundle.amd-test.js' | grep -v 'test-main.js')
 BUILD_FILES = $(addprefix $(BUILD_DIR)/, \
 						$(MOD).js $(MOD).min.js \
@@ -44,22 +44,21 @@ browser-test: $(BUILD_DIR)/$(MOD).js $(BUILD_DIR)/$(MOD).core.js
 browser-test-amd: $(BUILD_DIR)/$(MOD).js $(BUILD_DIR)/$(MOD).core.js
 	$(KARMA) start karma.amd.conf.js --single-run $(KARMA_OPTS)
 
-$(BUILD_DIR)/$(MOD).js: index.js $(SRC_FILES) | unit-test
+$(BUILD_DIR)/$(MOD).js: lib/index.js $(SRC_FILES) | unit-test
 	@$(BROWSERIFY) $< > $@ -s graphlib
 
 $(BUILD_DIR)/$(MOD).min.js: $(BUILD_DIR)/$(MOD).js
 	@$(UGLIFY) --ecma=6 $< --comments '@license' > $@
 
-$(BUILD_DIR)/$(MOD).core.js: index.js $(SRC_FILES) | unit-test
+$(BUILD_DIR)/$(MOD).core.js: lib/index.js $(SRC_FILES) | unit-test
 	@$(BROWSERIFY) $< > $@ --no-bundle-external -s graphlib
 
 $(BUILD_DIR)/$(MOD).core.min.js: $(BUILD_DIR)/$(MOD).core.js
 	@$(UGLIFY) --ecma=6 $< --comments '@license' > $@
 
-dist: $(BUILD_FILES) | test
+dist: test
 	@rm -rf $@
-	@mkdir -p $@
-	@cp $^ dist
+	npm run build
 
 release: dist
 	@echo

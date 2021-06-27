@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "es6",
+    "declaration": true,
+    "sourceMap": false,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+    "importHelpers": true,
+    "outDir": "dist",
+    "paths": {
+      "lib/*": ["./lib"]
+    }
+  },
+  "include": [
+    "lib",
+    "test",
+    "typings"
+  ]
+}
