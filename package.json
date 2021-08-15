@@ -1,6 +1,6 @@
 {
   "name": "@pintora/graphlib",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "A directed and undirected multi-graph library",
   "author": "Tyler Long <tyler4long@gmail.com>",
   "main": "dist/graphlib.js",
