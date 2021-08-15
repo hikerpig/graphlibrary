@@ -4,4 +4,5 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 2.2.1 (2021-06-27)
 
-### 2.2.1 (2021-06-27)
+- Add typescript types
+- Add rollup for bundling mordern package

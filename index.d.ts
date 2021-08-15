@@ -14,7 +14,7 @@ declare module '@pintora/graphlib' {
     name?: string
   }
 
-  export class Graph<NodeData=any> {
+  export class Graph<NodeData=any, EdgeData=any, GraphData=any> {
     constructor(options?: GraphOptions)
 
     /**
@@ -36,7 +36,7 @@ declare module '@pintora/graphlib' {
      * @argument labelFn - default node label factory function.
      * @returns the graph, allowing this to be chained with other functions.
      */
-    setDefaultNodeLabel(labelFn: (v: string) => any): this
+    setDefaultNodeLabel(labelFn: (v: string) => Partial<NodeData>): this
 
     /**
      * Creates or updates the value for the node v in the graph. If label is supplied
@@ -79,7 +79,7 @@ declare module '@pintora/graphlib' {
      * @argument v - node to get parent of.
      * @returns parent node name or void if v has no parent.
      */
-    parent(v: string): string | void
+    parent(v: string): string | undefined
 
     /**
      * Gets list of direct children of node v.
@@ -99,7 +99,7 @@ declare module '@pintora/graphlib' {
      * @argument filter - filtration function detecting whether the node should stay or not.
      * @returns new graph made from current and nodes filtered.
      */
-    filterNodes(filter: (v: string) => boolean): Graph<NodeData>
+    filterNodes(filter: (v: string) => boolean): Graph<NodeData, EdgeData, GraphData>
 
     /**
      * Sets the default edge label. This label will be assigned as default label
@@ -109,7 +109,7 @@ declare module '@pintora/graphlib' {
      * @argument label - default edge label.
      * @returns the graph, allowing this to be chained with other functions.
      */
-    setDefaultEdgeLabel(label: any): this
+    setDefaultEdgeLabel(label: Partial<EdgeData>): this
 
     /**
      * Sets the default edge label factory function. This function will be invoked
@@ -120,7 +120,7 @@ declare module '@pintora/graphlib' {
      * @argument labelFn - default edge label factory function.
      * @returns the graph, allowing this to be chained with other functions.
      */
-    setDefaultEdgeLabel(labelFn: (v: string) => any): Graph<NodeData>
+    setDefaultEdgeLabel(labelFn: (v: string) => Partial<EdgeData>): this
 
     /**
      * Establish an edges path over the nodes in nodes list. If some edge is already
@@ -132,7 +132,7 @@ declare module '@pintora/graphlib' {
      * @argument label - value to set for each edge between pairs of nodes.
      * @returns the graph, allowing this to be chained with other functions.
      */
-    setPath(nodes: string[], label?: any): Graph
+    setPath(nodes: string[], label?: Partial<EdgeData>): this
 
     /**
      * Detects whether graph has a node with specified name or not.
@@ -152,7 +152,7 @@ declare module '@pintora/graphlib' {
      * @argument name - name of the node.
      * @returns the graph, allowing this to be chained with other functions.
      */
-    removeNode(name: string): Graph
+    removeNode(name: string): this
 
     /**
      * Gets all nodes of the graph. Note, the in case of compound graph subnodes are
@@ -169,7 +169,7 @@ declare module '@pintora/graphlib' {
      *
      * @returns label value of the node.
      */
-    node(name: string): any
+    node(name: string): NodeData | undefined
 
     /**
      * Creates or updates the label for the edge (v, w) with the optionally supplied
@@ -184,7 +184,7 @@ declare module '@pintora/graphlib' {
      * @argument name - unique name of the edge in order to identify it in multigraph.
      * @returns the graph, allowing this to be chained with other functions.
      */
-    setEdge(v: string, w: string, label?: any, name?: string): Graph
+    setEdge(v: string, w: string, label?: EdgeData, name?: string): this
 
     /**
      * Creates or updates the label for the specified edge. If label is supplied it is
@@ -197,7 +197,7 @@ declare module '@pintora/graphlib' {
      * @argument label - value to associate with the edge.
      * @returns the graph, allowing this to be chained with other functions.
      */
-    setEdge(edge: Edge, label?: any): Graph
+    setEdge(edge: Edge, label?: EdgeData): this
 
     /**
      * Gets edges of the graph. In case of compound graph subgraphs are not considered.
@@ -216,7 +216,7 @@ declare module '@pintora/graphlib' {
      * @argument name - name of the edge (actual for multigraph).
      * @returns value associated with specified edge.
      */
-    edge(v: string, w: string, name?: string): any
+    edge(v: string, w: string, name?: string): EdgeData | undefined
 
     /**
      * Gets the label for the specified edge.
@@ -225,7 +225,7 @@ declare module '@pintora/graphlib' {
      * @argument edge - edge descriptor.
      * @returns value associated with specified edge.
      */
-    edge(e: Edge): any
+    edge(e: Edge): EdgeData | undefined
 
     /**
      * Detects whether the graph contains specified edge or not. No subgraphs are considered.
@@ -276,7 +276,7 @@ declare module '@pintora/graphlib' {
      * @argument w - edge source node.
      * @returns edges descriptors list if v is in the graph, or undefined otherwise.
      */
-    inEdges(v: string, w?: string): void | Edge[]
+    inEdges(v: string, w?: string): undefined | Edge[]
 
     /**
      * Return all edges that are pointed at by node v. Optionally filters those edges down to just
@@ -287,7 +287,7 @@ declare module '@pintora/graphlib' {
      * @argument w - edge sink node.
      * @returns edges descriptors list if v is in the graph, or undefined otherwise.
      */
-    outEdges(v: string, w?: string): void | Edge[]
+    outEdges(v: string, w?: string): undefined | Edge[]
 
     /**
      * Returns all edges to or from node v regardless of direction. Optionally filters those edges
@@ -298,7 +298,7 @@ declare module '@pintora/graphlib' {
      * @argument w - edge adjacent node.
      * @returns edges descriptors list if v is in the graph, or undefined otherwise.
      */
-    nodeEdges(v: string, w?: string): void | Edge[]
+    nodeEdges(v: string, w?: string): undefined | Edge[]
 
     /**
      * Return all nodes that are predecessors of the specified node or undefined if node v is not in
@@ -308,7 +308,7 @@ declare module '@pintora/graphlib' {
      * @argument v - node identifier.
      * @returns node identifiers list or undefined if v is not in the graph.
      */
-    predecessors(v: string): void | string[]
+    predecessors(v: string): undefined | string[]
 
     /**
      * Return all nodes that are successors of the specified node or undefined if node v is not in
@@ -318,7 +318,7 @@ declare module '@pintora/graphlib' {
      * @argument v - node identifier.
      * @returns node identifiers list or undefined if v is not in the graph.
      */
-    successors(v: string): void | string[]
+    successors(v: string): undefined | string[]
 
     /**
      * Return all nodes that are predecessors or successors of the specified node or undefined if
@@ -329,7 +329,7 @@ declare module '@pintora/graphlib' {
      * @returns node identifiers list or undefined if v is not in the graph.
      */
 
-    neighbors(v: string): void | string[]
+    neighbors(v: string): undefined | string[]
 
     /**
      * Whether graph was created with 'directed' flag set to true or not.
@@ -358,14 +358,14 @@ declare module '@pintora/graphlib' {
      * @argument label - label value.
      * @returns the graph, allowing this to be chained with other functions.
      */
-    setGraph(label: any): this
+    setGraph(label: GraphData): this
 
     /**
      * Gets the graph label.
      *
      * @returns currently assigned label for the graph or undefined if no label assigned.
      */
-    graph(): void | string
+    graph(): GraphData
 
     /**
      * Gets the number of nodes in the graph.
